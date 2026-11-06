@@ -21,10 +21,12 @@ MENU = [
     {"id": "latte", "name": "카페 라떼", "english": "Café Latte", "category": "coffee", "price": 5000, "description": "부드러운 우유와 에스프레소", "icon": "🥛", "color": "latte"},
     {"id": "vanilla", "name": "바닐라 라떼", "english": "Vanilla Latte", "category": "coffee", "price": 5500, "description": "달콤한 바닐라의 기분 좋은 향", "icon": "☕", "color": "vanilla"},
     {"id": "matcha", "name": "말차 라떼", "english": "Matcha Latte", "category": "drink", "price": 5800, "description": "쌉싸름하고 진한 제주 말차", "icon": "🍵", "color": "matcha"},
+    {"id": "chocolate_latte", "name": "초코 라떼", "english": "Chocolate Latte", "category": "drink", "price": 5500, "description": "진한 초콜릿과 부드러운 우유", "icon": "🍫", "color": "latte"},
     {"id": "tea", "name": "얼그레이 티", "english": "Earl Grey Tea", "category": "drink", "price": 4800, "description": "향긋한 베르가못 블렌딩 티", "icon": "🫖", "color": "tea"},
     {"id": "ade", "name": "자몽 에이드", "english": "Grapefruit Ade", "category": "drink", "price": 6000, "description": "상큼한 자몽과 톡 쏘는 탄산", "icon": "🍊", "color": "ade"},
     {"id": "croissant", "name": "버터 크루아상", "english": "Butter Croissant", "category": "dessert", "price": 4200, "description": "겹겹이 바삭한 버터의 풍미", "icon": "🥐", "color": "pastry"},
     {"id": "cake", "name": "치즈 케이크", "english": "Cheesecake", "category": "dessert", "price": 6500, "description": "진하고 부드러운 치즈 케이크", "icon": "🍰", "color": "cake"},
+    {"id": "egg_tart", "name": "에그타르트", "english": "Egg Tart", "category": "dessert", "price": 4500, "description": "바삭한 타르트와 부드러운 커스터드", "icon": "🥧", "color": "pastry"},
 ]
 
 class OrderItem(BaseModel):

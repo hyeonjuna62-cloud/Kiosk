@@ -1,4 +1,4 @@
-let menu = [], cart = [], category = 'all', selectedProduct = null, temperature = 'ICE', orderType = '매장', paymentMethod = '카드', submitting = false;
+let menu = [], cart = [], category = 'all', selectedProduct = null, temperature = 'ICE', selectedQuantity = 1, orderType = '매장', paymentMethod = '카드', submitting = false;
 const $ = (id) => document.getElementById(id);
 const money = (value) => `${value.toLocaleString('ko-KR')}원`;
 const modal = $('modal');
@@ -15,8 +15,8 @@ function renderCart() {
 function showModal(html) { $('modal-content').innerHTML = html; modal.classList.remove('hidden'); }
 function hideModal() { if (!submitting) modal.classList.add('hidden'); }
 function productModal(p) {
-  selectedProduct = p; temperature = 'ICE';
-  showModal(`<div class="eyebrow">SELECT YOUR MENU</div><h2 id="modal-title">${p.name}</h2><p>${p.description} · ${money(p.price)}</p>${p.category !== 'dessert' ? '<div class="option-label">온도를 선택해 주세요</div><div class="options"><button data-temp="HOT">HOT</button><button class="selected" data-temp="ICE">ICE</button></div>' : ''}<button class="primary" id="add-cart">담기 <span>→</span></button>`);
+  selectedProduct = p; temperature = 'ICE'; selectedQuantity = 1;
+  showModal(`<div class="eyebrow">SELECT YOUR MENU</div><h2 id="modal-title">${p.name}</h2><p>${p.description} · ${money(p.price)}</p>${p.category !== 'dessert' ? '<div class="option-label">온도를 선택해 주세요</div><div class="options"><button data-temp="HOT">HOT</button><button class="selected" data-temp="ICE">ICE</button></div>' : ''}<div class="option-label">수량을 선택해 주세요</div><div class="quantity modal-quantity"><button data-quantity="minus" aria-label="수량 줄이기" disabled>−</button><span id="selected-quantity" aria-live="polite">1</span><button data-quantity="plus" aria-label="수량 늘리기">+</button></div><p id="quantity-error" class="error" aria-live="polite"></p><button class="primary" id="add-cart">담기 <span>→</span></button>`);
 }
 function checkoutModal() {
   orderType = '매장'; paymentMethod = '카드';
@@ -34,7 +34,8 @@ modal.addEventListener('click', async e => {
   for (const [attribute, setter] of [['temp', v => temperature = v], ['type', v => orderType = v], ['payment', v => paymentMethod = v]]) {
     if (button.dataset[attribute]) { setter(button.dataset[attribute]); button.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('selected', b === button)); return; }
   }
-  if (button.id === 'add-cart') { const temp = selectedProduct.category === 'dessert' ? 'NONE' : temperature; const existing = cart.find(i => i.product.id === selectedProduct.id && i.temperature === temp); if (existing) existing.quantity = Math.min(99, existing.quantity + 1); else cart.push({product: selectedProduct, temperature: temp, quantity: 1}); renderCart(); hideModal(); }
+  if (button.dataset.quantity) { selectedQuantity = Math.max(1, Math.min(99, selectedQuantity + (button.dataset.quantity === 'plus' ? 1 : -1))); $('selected-quantity').textContent = selectedQuantity; modal.querySelector('[data-quantity="minus"]').disabled = selectedQuantity === 1; modal.querySelector('[data-quantity="plus"]').disabled = selectedQuantity === 99; $('quantity-error').textContent = ''; return; }
+  if (button.id === 'add-cart') { const temp = selectedProduct.category === 'dessert' ? 'NONE' : temperature; const existing = cart.find(i => i.product.id === selectedProduct.id && i.temperature === temp); if (existing && existing.quantity + selectedQuantity > 99) { $('quantity-error').textContent = `같은 메뉴는 장바구니에 최대 99개까지 담을 수 있어요. 현재 ${existing.quantity}개가 담겨 있어요.`; return; } if (existing) existing.quantity += selectedQuantity; else cart.push({product: selectedProduct, temperature: temp, quantity: selectedQuantity}); renderCart(); hideModal(); }
   if (button.id === 'done') hideModal();
   if (button.id === 'pay') {
     submitting = true; button.disabled = true; button.textContent = '주문을 처리하고 있어요...';
